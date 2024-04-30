@@ -1,0 +1,22 @@
+[GENERATED OBJECT FILE]
+b__threadsumada.o
+[PROJECT FILES]
+C:\GNAT\2021\bin\POP2ADA\pop2ada.gpr
+20240416144534 8091e27d4b7a33f4b1283032eb10789f
+[BOUND OBJECT FILES]
+C:\GNAT\2021\bin\POP2ADA\obj\threadsumada.o
+[GENERATED SOURCE FILES]
+b__threadsumada.ads
+b__threadsumada.adb
+b__threadsumada.ali
+[RESULTING OPTIONS]
+-LC:\GNAT\2021\bin\POP2ADA\obj\
+-LC:\GNAT\2021\bin\POP2ADA\obj\
+-LC:/gnat/2021/lib/gcc/x86_64-w64-mingw32/10.3.1/adalib/
+-static
+-static-libgcc
+C:/gnat/2021/lib/gcc/x86_64-w64-mingw32/10.3.1/adalib/libgnarl.a
+C:/gnat/2021/lib/gcc/x86_64-w64-mingw32/10.3.1/adalib/libgnat.a
+-Xlinker
+--stack=0x200000,0x1000
+-mthreads
