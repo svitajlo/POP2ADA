@@ -1,94 +1,99 @@
 with Ada.Text_IO; use Ada.Text_IO;
-with Ada.Integer_Text_IO; use Ada.Integer_Text_IO;
+with Ada.Numerics.Generic_Elementary_Functions;
 
-procedure ThreadSumAda is
+procedure Find_Minimum is
+   -- Constants for the array size and number of threads.
+   dim : constant Integer := 100000;
+   thread_num : constant Integer := 2;
 
-   Dim : constant Integer := 100000;
-   Thread_Num : constant Integer := 4;
+   -- The array to be processed.
+   arr : array(1..dim) of Integer;
 
-   Arr : array(1..Dim) of Integer;
-
+   -- Initialize the array with sequential values, with one random negative number.
    procedure Init_Arr is
+      Random_Number : constant Integer := 100; -- Index for the negative value.
    begin
-      for I in 1..Dim loop
-         Arr(I) := -1;
+      for i in 1..dim loop
+         arr(i) := i;
       end loop;
+      arr(Random_Number) := -12345; -- Setting a negative number at a random index.
    end Init_Arr;
 
-   function Part_Sum(Start_Index, Finish_Index : in Integer) return Long_Long_Integer is
-      Sum : Long_Long_Integer := 0;
-   begin
-      for I in Start_Index..Finish_Index loop
-         Sum := Sum + Long_Long_Integer(Arr(I));
-      end loop;
-      return Sum;
-   end Part_Sum;
-
-   task type Starter_Thread is
+   -- Task for finding minimum in a portion of the array.
+   task type Min_Finder_Thread is
       entry Start(Start_Index, Finish_Index : in Integer);
-   end Starter_Thread;
+   end Min_Finder_Thread;
 
-   protected Part_Manager is
-      procedure Set_Part_Sum(Sum : in Long_Long_Integer);
-      entry Get_Min_Value(Min_Value : out Long_Long_Integer; Min_Index : out Integer);
+   -- Shared data structure for synchronizing the minimum values.
+   protected Min_Manager is
+      procedure Set_Min_Value(Value, Index : in Integer);
+      entry Get_Minimum(Min_Value : out Integer; Min_Index : out Integer);
    private
+      Min_Value : Integer := Integer'Last;
+      Min_Index : Integer := -1;
       Tasks_Count : Integer := 0;
-      Min_Value : Long_Long_Integer := Long_Long_Integer'Last;
-      Min_Index : Integer := 0;
-   end Part_Manager;
+   end Min_Manager;
 
-   protected body Part_Manager is
-      procedure Set_Part_Sum(Sum : in Long_Long_Integer) is
+   -- Implementation of Min_Manager.
+   protected body Min_Manager is
+      procedure Set_Min_Value(Value, Index : in Integer) is
       begin
-         if Sum < Min_Value then
-            Min_Value := Sum;
-            Min_Index := Tasks_Count;
+         if Value < Min_Value then
+            Min_Value := Value;
+            Min_Index := Index;
          end if;
          Tasks_Count := Tasks_Count + 1;
-      end Set_Part_Sum;
+      end Set_Min_Value;
 
-      entry Get_Min_Value(Min_Value : out Long_Long_Integer; Min_Index : out Integer) when Tasks_Count = Thread_Num is
+      entry Get_Minimum(Min_Value : out Integer; Min_Index : out Integer) when Tasks_Count = thread_num is
       begin
-         Min_Value := Part_Manager.Min_Value;
-         Min_Index := Part_Manager.Min_Index;
-      end Get_Min_Value;
+         Min_Value := Min_Value;
+         Min_Index := Min_Index;
+      end Get_Minimum;
+   end Min_Manager;
 
-   end Part_Manager;
-
-   task body Starter_Thread is
-      Sum : Long_Long_Integer := 0;
+   -- Implementation of Min_Finder_Thread.
+   task body Min_Finder_Thread is
       Start_Index, Finish_Index : Integer;
    begin
       accept Start(Start_Index, Finish_Index : in Integer) do
-         Starter_Thread.Start_Index := Start_Index;
-         Starter_Thread.Finish_Index := Finish_Index;
+         Min_Finder_Thread.Start_Index := Start_Index;
+         Min_Finder_Thread.Finish_Index := Finish_Index;
       end Start;
-      Sum := Part_Sum(Start_Index  => Start_Index,
-                      Finish_Index => Finish_Index);
-      Part_Manager.Set_Part_Sum(Sum);
-   end Starter_Thread;
 
-   function Parallel_Sum return Long_Long_Integer is
-      Sum : Long_Long_Integer := 0;
-      Threads : array(1..Thread_Num) of Starter_Thread;
-   begin
-      for I in 1..Thread_Num loop
-         Threads(I).Start(1 + (I-1)*Dim/Thread_Num, I*Dim/Thread_Num);
-      end loop;
+      -- Find minimum in the assigned portion.
       declare
-         Min_Index : Integer;
+         Local_Min : Integer := arr(Start_Index);
+         Local_Min_Index : Integer := Start_Index;
       begin
-         Part_Manager.Get_Min_Value(Sum, Min_Index);
-         return Sum;
-      end;
-   end Parallel_Sum;
+         for i in Start_Index..Finish_Index loop
+            if arr(i) < Local_Min then
+               Local_Min := arr(i);
+               Local_Min_Index := i;
+            end if;
+         end loop;
 
-   procedure Print_Result(Min_Value : Long_Long_Integer; Min_Index : Integer) is
-   begin
-      Put_Line("Min value: " & Long_Long_Integer'Image(Min_Value) & " | Index: " & Integer'Image(Min_Index));
-   end Print_Result;
+         -- Set the local minimum to the shared manager.
+         Min_Manager.Set_Min_Value(Local_Min, Local_Min_Index);
+      end;
+   end Min_Finder_Thread;
+
+   -- Main program logic to start threads and get the minimum value.
+   Min_Finder : array(1..thread_num) of Min_Finder_Thread;
+   Min_Value : Integer;
+   Min_Index : Integer;
 
 begin
    Init_Arr;
-   Print_Result(Parallel_Sum, 0);
-end ThreadSumAda;
+
+   -- Start threads to find minimum in parts of the array.
+   Min_Finder(1).Start(1, dim / thread_num);
+   Min_Finder(2).Start(dim / thread_num + 1, dim);
+
+   -- Get the minimum value from the manager.
+   Min_Manager.Get_Minimum(Min_Value, Min_Index);
+
+   -- Output the minimum value and its index.
+   Put_Line("Minimum value: " & Integer'Image(Min_Value));
+   Put_Line("Index of minimum value: " & Integer'Image(Min_Index));
+end Find_Minimum;

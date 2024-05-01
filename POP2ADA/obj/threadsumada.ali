@@ -12,7 +12,6 @@ RV NO_EXCEPTION_PROPAGATION
 RV NO_EXCEPTIONS
 RV NO_IO
 RV NO_LOCAL_PROTECTED_OBJECTS
-RV NO_LONG_LONG_INTEGERS
 RV NO_NESTED_FINALIZATION
 RV NO_PROTECTED_TYPES
 RV NO_SECONDARY_STACK
@@ -28,17 +27,17 @@ RV MAX_TASK_ENTRIES=1
 RV MAX_TASKS=1+
 RV MAX_ENTRY_QUEUE_LENGTH=1+
 
-U threadsumada%b	threadsumada.adb	1c6b2fd7 NE OO SU
+U find_minimum%b	threadsumada.adb	13504c84 NE OO SU
 W ada%s			ada.ads			ada.ali
 Z ada.exceptions%s	a-except.adb		a-except.ali
-W ada.integer_text_io%s	a-inteio.ads		a-inteio.ali
+W ada.numerics%s	a-numeri.ads		a-numeri.ali
+W ada.numerics.generic_elementary_functions%s
 Z ada.real_time%s	a-reatim.adb		a-reatim.ali
 Z ada.strings.text_buffers%s  a-sttebu.adb	a-sttebu.ali
 W ada.text_io%s		a-textio.adb		a-textio.ali
 Z system%s		system.ads		system.ali
-Z system.concat_4%s	s-conca4.adb		s-conca4.ali
+Z system.concat_2%s	s-conca2.adb		s-conca2.ali
 Z system.img_int%s	s-imgint.ads		s-imgint.ali
-Z system.img_lli%s	s-imglli.ads		s-imglli.ali
 Z system.parameters%s	s-parame.adb		s-parame.ali
 Z system.secondary_stack%s  s-secsta.adb	s-secsta.ali
 Z system.soft_links%s	s-soflin.adb		s-soflin.ali
@@ -53,8 +52,16 @@ Z system.tasking.stages%s  s-tassta.adb		s-tassta.ali
 D ada.ads		20210520051132 76789da1 ada%s
 D a-except.ads		20210520051128 946f3014 ada.exceptions%s
 D a-finali.ads		20210520051128 bf4f806b ada.finalization%s
-D a-inteio.ads		20210520051128 f64b89a4 ada.integer_text_io%s
 D a-ioexce.ads		20210520051128 e4a01f64 ada.io_exceptions%s
+D a-numeri.ads		20210520051130 84bea7a3 ada.numerics%s
+D a-nuaufl.ads		20210520051130 020cac40 ada.numerics.aux_float%s
+D a-nagefl.ads		20210520051130 53f456a7 ada.numerics.aux_generic_float%s
+D a-naliop.ads		20210520051130 6b421e5f ada.numerics.aux_linker_options%s
+D a-nalofl.ads		20210520051130 6d8e51a4 ada.numerics.aux_long_float%s
+D a-nallfl.ads		20210520051130 6ccf65a3 ada.numerics.aux_long_long_float%s
+D a-nashfl.ads		20210520051130 b54ed4fb ada.numerics.aux_short_float%s
+D a-ngelfu.ads		20210520051130 e6ec3af5 ada.numerics.generic_elementary_functions%s
+D a-ngelfu.adb		20210520051130 2940142d ada.numerics.generic_elementary_functions%b
 D a-reatim.ads		20210520051128 0240fc73 ada.real_time%s
 D a-stream.ads		20210520051130 119b8fb3 ada.streams%s
 D a-string.ads		20210520051130 90ac6797 ada.strings%s
@@ -62,22 +69,21 @@ D a-sttebu.ads		20210520051130 18209c64 ada.strings.text_buffers%s
 D a-stuten.ads		20210520051130 808c40ad ada.strings.utf_encoding%s
 D a-tags.ads		20210520051130 9eaa38c6 ada.tags%s
 D a-textio.ads		20210520051130 aef4d56d ada.text_io%s
-D a-tiinio.ads		20210520051130 390edddb ada.text_io.integer_io%s
 D a-unccon.ads		20210520051130 0e9b276f ada.unchecked_conversion%s
+D threadsumada.adb	20240501175916 5b48a31c find_minimum%b
 D interfac.ads		20210520051132 edec285f interfaces%s
 D i-c.ads		20210520051132 d9beded9 interfaces.c%s
 D i-cstrin.ads		20210520051132 341d0ddf interfaces.c.strings%s
 D i-cstrea.ads		20210520051132 e53d8b8e interfaces.c_streams%s
 D system.ads		20210520051136 2ffa5114 system%s
 D s-atacco.ads		20210520051132 4c36d12f system.address_to_access_conversions%s
-D s-conca4.ads		20210520051132 7e642b20 system.concat_4%s
+D s-conca2.ads		20210520051132 02a0d7d0 system.concat_2%s
 D s-crtl.ads		20210520051132 0ebbdb71 system.crtl%s
 D s-exctab.ads		20210520051132 54135002 system.exception_table%s
 D s-ficobl.ads		20210520051132 078245e4 system.file_control_block%s
 D s-finroo.ads		20210520051132 4ff27390 system.finalization_root%s
 D s-imagei.ads		20210520051134 0d3f86a7 system.image_i%s
 D s-imgint.ads		20210520051134 bdb6f5ec system.img_int%s
-D s-imglli.ads		20210520051134 3723d9ff system.img_lli%s
 D s-multip.ads		20210520051134 38ac9f73 system.multiprocessors%s
 D s-osinte.ads		20210520051128 97504df8 system.os_interface%s
 D s-parame.ads		20210520051134 4752c4cb system.parameters%s
@@ -102,58 +108,53 @@ D s-traent.ads		20210520051134 26a8d361 system.traceback_entries%s
 D s-unstyp.ads		20210520051134 2b077493 system.unsigned_types%s
 D s-wchcon.ads		20210520051136 1b7d22d2 system.wch_con%s
 D s-win32.ads		20210520051136 15ac53fb system.win32%s
-D threadsumada.adb	20240416150312 44d4731e threadsumada%b
 D unchconv.ads		20210520051136 ca2f9e18 unchecked_conversion%s
 G a e
-G c Z b b [threadsumada standard 4 11 none]
+G c Z b b [find_minimum standard 4 11 none]
 X 1 ada.ads
-16K9*Ada 20e8 53|1r6 1r23 2r6 2r31
-X 4 a-inteio.ads
-18K13*Integer_Text_IO[13|46] 53|2w10 2r35
-X 12 a-textio.ads
-58K13*Text_IO 725e16 53|1w10 1r27
-506U14*Put_Line 53|88s7
-X 36 s-stausa.ads
+16K9*Ada 20e8 22|1r6 1r23 2r6
+X 5 a-numeri.ads
+16K13*Numerics 35e17 22|2r10
+X 12 a-ngelfu.ads
+39k22*Generic_Elementary_Functions 207e46 22|2w19
+X 20 a-textio.ads
+58K13*Text_IO 725e16 22|1w10 1r27
+506U14*Put_Line 22|97s4 98s4
+X 22 threadsumada.adb
+4U11*Find_Minimum 4b11 99l5 99t17
+6i4 dim{integer} 10r19 16r19 90r27 91r24 91r46
+7i4 thread_num{integer} 48r94 82r26 90r33 91r30
+10a4 arr(integer) 17m10 19m7 66r33 70r16 71r29
+13U14 Init_Arr 13b14 20l8 20t16 87s4
+14i7 Random_Number{integer} 19r11
+16i11 i{integer} 17r14 17r20
+23T14 Min_Finder_Thread 25l8 25e25 56b14 60m10 61m10 79l8 79t25 82r41
+24Y13 Start 24>19 24>32 59b14 62l11 62t16 90s18 91s18
+24i19 Start_Index{integer} 60r43
+24i32 Finish_Index{integer} 61r44
+28w14 Min_Manager 38b19 53l8 53t19 77r10 94r4
+29U17 Set_Min_Value 29>31 29>38 39b17 46l11 46t24 77s22
+29i31 Value{integer} 39b31 41r13 42r26
+29i38 Index{integer} 39b38 43r26
+30Y13 Get_Minimum 30<25 30<50 48b13 52l11 52t22 94s16
+30i25 Min_Value{integer} 50m10 50r23
+30i50 Min_Index{integer} 51m10 51r23
+32i7 Min_Value{integer} 41r21 42r13
+33i7 Min_Index{integer} 43r13
+34i7 Tasks_Count{integer} 45r10 45r25 48r80
+48i25 Min_Value{integer}
+48i50 Min_Index{integer}
+57i7 Start_Index{integer} 60m28 66r37 67r39 69r19
+57i20 Finish_Index{integer} 61m28 69r32
+59i20 Start_Index{integer}
+59i33 Finish_Index{integer}
+66i10 Local_Min{integer} 70r25 71m16 77r36
+67i10 Local_Min_Index{integer} 72m16 77r47
+69i14 i{integer} 70r20 71r33 72r35
+82a4 Min_Finder(23T14) 90r4 91r4
+83i4 Min_Value{integer} 94m28 97r47
+84i4 Min_Index{integer} 94m39 98r56
+X 43 s-stausa.ads
 208U14*Initialize 209i<c,__gnat_stack_usage_initialize>22
 273U14*Output_Results 277i<c,__gnat_stack_usage_output_results>22
-X 53 threadsumada.adb
-4U11*ThreadSumAda 4b11 94l5 94t17
-6i4 Dim{integer} 9r19 13r19 76r37 76r55
-7i4 Thread_Num{integer} 50r106 73r26 75r19 76r41 76r59
-9a4 Arr(integer) 14m10 22r41
-11U14 Init_Arr 11b14 16l8 16t16 92s4
-13i11 I{integer} 14r14
-18V13 Part_Sum{long_long_integer} 18b13 18>22 18>35 25l8 25t16 66s14
-18i22 Start_Index{integer} 21r16 66r23
-18i35 Finish_Index{integer} 21r29 67r23
-19i7 Sum{long_long_integer} 22m10 22r17 24r14
-21i11 I{integer} 22r45
-27T14 Starter_Thread 29l8 29e22 58b14 63m10 64m10 69l8 69t22 73r41
-28Y13 Start 28>19 28>32 62b14 65l11 65t16 76s21
-28i19 Start_Index{integer} 63r40
-28i32 Finish_Index{integer} 64r41
-31w14 Part_Manager 40b19 52r23 53r23 56l8 56t20 68r7 81r10
-32U17 Set_Part_Sum 32>30 41b17 48l11 48t23 68s20
-32i30 Sum{long_long_integer} 41b30 43r13 44r26
-33Y13 Get_Min_Value 33<27 33<62 50b13 54l11 54t24 81s23
-33i27 Min_Value{long_long_integer} 52m10
-33i62 Min_Index{integer} 53m10
-35i7 Tasks_Count{integer} 45r26 47r10 47r25 50r92
-36i7 Min_Value{long_long_integer} 43r19 44r13 52r36
-37i7 Min_Index{integer} 45r13 53r36
-50i27 Min_Value{long_long_integer}
-50i62 Min_Index{integer}
-59i7 Sum{long_long_integer} 66m7 68r33
-60i7 Start_Index{integer} 63m25 66r39
-60i20 Finish_Index{integer} 64m25 67r39
-62i20 Start_Index{integer}
-62i33 Finish_Index{integer}
-71V13 Parallel_Sum{long_long_integer} 71b13 84l8 84t20 93s17
-72i7 Sum{long_long_integer} 81m37 82r17
-73a7 Threads(27T14) 76r10
-75i11 I{integer} 76r18 76r32 76r53
-79i10 Min_Index{integer} 81m42
-86U14 Print_Result 86b14 86>27 86>58 89l8 89t20 93s4
-86i27 Min_Value{long_long_integer} 88r56
-86i58 Min_Index{integer} 88r98
 
